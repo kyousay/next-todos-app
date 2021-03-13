@@ -1,0 +1,14 @@
+version: '3'
+services:
+  todo_client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: next-todo-app-client
+    volumes:
+      - ./:/usr/src/app
+    command: "npm run dev"
+    ports:
+      - "3000:3000"
+      - "6006:6006"
+
