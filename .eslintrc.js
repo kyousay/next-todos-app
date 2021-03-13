@@ -1,8 +1,8 @@
-// TODO 小林 @typescript-eslint/parser エラー修正
 module.exports = {
   env: {
     browser: true,
     es6: true,
+    node: true,
     jest: true,
   },
   extends: [

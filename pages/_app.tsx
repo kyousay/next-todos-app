@@ -1,8 +1,10 @@
-import '../styles/globals.css'
+import React from 'react';
+import 'normalize.css';
 import type { AppProps } from 'next/app';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+export default function MyApp({
+  Component,
+  pageProps,
+}: AppProps): React.ReactElement {
+  return <Component {...pageProps} />;
 }
-
-export default MyApp

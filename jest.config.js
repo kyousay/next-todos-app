@@ -1,4 +1,3 @@
-// TODO リントエラーを解消する
 module.exports = {
   testMatch: ['**/__tests__/**/*.test.(ts|tsx)'],
   moduleNameMapper: {
