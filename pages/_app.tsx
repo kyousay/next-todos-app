@@ -1,6 +1,6 @@
 import React from 'react';
-import 'normalize.css';
 import type { AppProps } from 'next/app';
+import '../components/stylesheets/global.css';
 
 export default function MyApp({
   Component,
