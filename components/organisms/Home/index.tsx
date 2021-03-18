@@ -1,22 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import Home from './Home';
+import {
+  TodoStateContext,
+  TodoDispatchContext,
+} from '../../../context/TodoContext/TodoProviderContainer';
 
 const Component: React.FC = () => {
-  // TODO: 後でContextで代替
-  const [dummyTodos, setDummyTodos] = useState([
-    {
-      id: '1',
-      text: 'test1',
-      name: 'test1',
-      checked: false,
-    },
-    {
-      id: '2',
-      text: 'test2',
-      name: 'test2',
-      checked: true,
-    },
-  ]);
+  const { todos } = useContext(TodoStateContext);
+  const { handleChangeTodo, handleCreateTodo } = useContext(
+    TodoDispatchContext,
+  );
 
   const [inputValue, setInputValue] = useState('');
 
@@ -24,31 +17,29 @@ const Component: React.FC = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
     },
-    [],
+    [setInputValue],
   );
 
   const handleChangeCheckbox = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-      const updateddummyTodos = [...dummyTodos];
-      updateddummyTodos[index].checked = e.target.checked;
-      setDummyTodos(updateddummyTodos);
+      handleChangeTodo(index, e.target.checked);
     },
-    [dummyTodos, setDummyTodos],
+    [handleChangeTodo],
   );
 
-  const handleCreateTodo = useCallback(
-    (id: string, text: string, name: string) => {
-      setDummyTodos([...dummyTodos].concat({ id, text, name, checked: false }));
+  const handleCreateTodos = useCallback(
+    (id: string, name: string, text: string) => {
+      handleCreateTodo(id, name, text);
     },
-    [dummyTodos],
+    [handleCreateTodo],
   );
   return (
     <Home
-      todos={dummyTodos}
+      todos={todos}
       inputValue={inputValue}
       changeInputHandler={handleChangeInput}
       changeCheckboxHandler={handleChangeCheckbox}
-      createTodoHandler={handleCreateTodo}
+      createTodoHandler={handleCreateTodos}
     />
   );
 };

@@ -52,7 +52,7 @@ const Home: React.FC<Props> = (props) => {
           e.preventDefault();
           // TODO 後で消す
           const uniqueString = Date.now().toString();
-          createTodoHandler(uniqueString, inputValue, uniqueString);
+          createTodoHandler(uniqueString, uniqueString, inputValue);
         }}>
         <input
           type="text"

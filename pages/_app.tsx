@@ -2,6 +2,7 @@ import React from 'react';
 import type { AppProps } from 'next/app';
 import '../components/stylesheets/global.css';
 import Header from '../components/organisms/Header/Header';
+import TodoProviderContainer from '../context/TodoContext/TodoProviderContainer';
 
 export default function MyApp({
   Component,
@@ -10,7 +11,9 @@ export default function MyApp({
   return (
     <>
       <Header>Todo App</Header>
-      <Component {...pageProps} />
+      <TodoProviderContainer>
+        <Component {...pageProps} />
+      </TodoProviderContainer>
     </>
   );
 }
