@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
 import styles from './Home.module.scss';
 
 type Props = {
@@ -17,6 +18,10 @@ type Props = {
   createTodoHandler: (id: string, name: string, text: string) => void;
 };
 
+type FormData = {
+  todo_text: string;
+};
+
 const Home: React.FC<Props> = (props) => {
   const {
     todos,
@@ -25,6 +30,12 @@ const Home: React.FC<Props> = (props) => {
     createTodoHandler,
     changeInputHandler,
   } = props;
+  const { register, handleSubmit, clearErrors, errors } = useForm<FormData>();
+  const onSubmit = () => {
+    const uniqueString = Date.now().toString();
+    createTodoHandler(uniqueString, uniqueString, inputValue);
+    clearErrors();
+  };
   return (
     <div className={styles.root}>
       <ul className={styles.todoList}>
@@ -45,19 +56,21 @@ const Home: React.FC<Props> = (props) => {
           );
         })}
       </ul>
-      <form
-        action="/todo/new"
-        method="POST"
-        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          // TODO 後で消す
-          const uniqueString = Date.now().toString();
-          createTodoHandler(uniqueString, uniqueString, inputValue);
-        }}>
+      {errors.todo_text && <div>{errors.todo_text.message}</div>}
+      <form action="/todo/new" method="POST" onSubmit={handleSubmit(onSubmit)}>
         <input
           type="text"
           name="todo_text"
           placeholder="please input text"
+          ref={register({
+            pattern: {
+              value: /^[a-zA-Z1-9亜-熙ぁ-んァ-ヶ]+$/g,
+              message: '記号は使用できません',
+            },
+            required: { value: true, message: '入力は必須です' },
+            minLength: { value: 5, message: '5文字以上入力してください' },
+            maxLength: { value: 30, message: '30文字以内で入力してください' },
+          })}
           className={styles.textInput}
           value={inputValue}
           onChange={changeInputHandler}
