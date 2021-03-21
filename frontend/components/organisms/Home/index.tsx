@@ -4,8 +4,19 @@ import {
   TodoStateContext,
   TodoDispatchContext,
 } from '../../../context/TodoContext/TodoProviderContainer';
+import axios from 'axios';
+import useSWR from 'swr';
+
+const axiosFetcher = async () => {
+  const result = await axios.get<any>(
+    'https://jsonplaceholder.typicode.com/comments/?_limit=10',
+  );
+  return result.data;
+};
 
 const Component: React.FC = () => {
+  const { data, error } = useSWR('todoFetch', axiosFetcher);
+  console.log(data);
   const { todos } = useContext(TodoStateContext);
   const { handleChangeTodo, handleCreateTodo } = useContext(
     TodoDispatchContext,
