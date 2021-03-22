@@ -1,15 +1,15 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import styles from './Home.module.scss';
+import { Todo } from '../../../types/todo';
+import classNames from 'classnames';
+import Link from 'next/link';
 
 type Props = {
-  todos: {
-    id: string;
-    name: string;
-    checked: boolean;
-    text: string;
-  }[];
+  status: string;
+  todos: Todo[];
   inputValue: string;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
   changeInputHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   changeCheckboxHandler: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -24,8 +24,10 @@ type FormData = {
 
 const Home: React.FC<Props> = (props) => {
   const {
+    status,
     todos,
     inputValue,
+    setInputValue,
     changeCheckboxHandler,
     createTodoHandler,
     changeInputHandler,
@@ -35,9 +37,44 @@ const Home: React.FC<Props> = (props) => {
     const uniqueString = Date.now().toString();
     createTodoHandler(uniqueString, uniqueString, inputValue);
     clearErrors();
+    setInputValue('');
   };
   return (
     <div className={styles.root}>
+      <nav className={styles.nav}>
+        <ul className={styles.nav_list}>
+          <li className={styles.nav_item}>
+            <Link href="/?status=All" passHref>
+              <a
+                className={classNames(styles.nav_link, {
+                  active: status === 'All',
+                })}>
+                All
+              </a>
+            </Link>
+          </li>
+          <li className={styles.nav_item}>
+            <Link href="/?status=NotYet">
+              <a
+                className={classNames(styles.nav_link, {
+                  active: status === 'NotYet',
+                })}>
+                Not Yet
+              </a>
+            </Link>
+          </li>
+          <li className={styles.nav_item}>
+            <Link href="/?status=Done">
+              <a
+                className={classNames(styles.nav_link, {
+                  active: status === 'Done',
+                })}>
+                Done
+              </a>
+            </Link>
+          </li>
+        </ul>
+      </nav>
       <ul className={styles.todoList}>
         {todos.map((todo, index) => {
           return (
@@ -56,7 +93,9 @@ const Home: React.FC<Props> = (props) => {
           );
         })}
       </ul>
-      {errors.todo_text && <div>{errors.todo_text.message}</div>}
+      {errors.todo_text && (
+        <p className={styles.error_text}>{errors.todo_text.message}</p>
+      )}
       <form action="/todo/new" method="POST" onSubmit={handleSubmit(onSubmit)}>
         <input
           type="text"

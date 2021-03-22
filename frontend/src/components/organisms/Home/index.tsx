@@ -6,6 +6,7 @@ import {
 } from '../../../context/TodoContext/TodoProviderContainer';
 import axios from 'axios';
 import useSWR from 'swr';
+import { useRouter } from 'next/router';
 
 const axiosFetcher = async () => {
   const result = await axios.get<any>(
@@ -15,6 +16,9 @@ const axiosFetcher = async () => {
 };
 
 const Component: React.FC = () => {
+  const router = useRouter();
+  const query = router.query.status;
+  const status = query ? query : 'All';
   const { data, error } = useSWR('todoFetch', axiosFetcher);
   console.log(data);
   const { todos } = useContext(TodoStateContext);
@@ -48,6 +52,8 @@ const Component: React.FC = () => {
     <Home
       todos={todos}
       inputValue={inputValue}
+      status={status as string}
+      setInputValue={setInputValue}
       changeInputHandler={handleChangeInput}
       changeCheckboxHandler={handleChangeCheckbox}
       createTodoHandler={handleCreateTodos}
