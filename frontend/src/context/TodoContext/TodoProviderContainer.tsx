@@ -9,7 +9,7 @@ export const TodoDispatchContext = createContext<
 const TodoProviderContainer: React.FC = ({ children }) => {
   const { state, handleChangeTodo, handleCreateTodo } = useTodoCore();
   return (
-    <TodoStateContext.Provider value={{ ...state }}>
+    <TodoStateContext.Provider value={state}>
       <TodoDispatchContext.Provider
         value={{ handleChangeTodo, handleCreateTodo }}>
         {children}

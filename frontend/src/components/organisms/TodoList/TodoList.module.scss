@@ -1,0 +1,57 @@
+.root {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+    .todo_list {
+        padding: 50px 0;
+    }
+
+    .todo_item {
+		display: grid;
+		grid-template-columns: 15px 1fr 15px;
+		grid-column-gap: 10px;
+		width: 300px;
+        &:not(:first-of-type) {
+          margin-top: 10px;
+        }
+    }
+
+	.todo_checkbox {
+		grid-column: 1;
+	}
+
+	.todo_label {
+		grid-column: 2;
+		word-break: break-word;
+	}
+
+	.todo_icon_wrapper {
+        grid-column: 3;
+        cursor: pointer;
+	}
+
+	.error_text_wrapper {
+		display: flex;
+		align-items: center;
+		height: 30px;
+		padding: 20px;
+	}
+
+
+    .error_text {
+        color: red;
+        padding: 20px;
+    }
+
+    .text_input {
+        padding: 5px;
+    }
+
+    .submit_button {
+        margin-left: 5px;
+    }
+}
+
+
