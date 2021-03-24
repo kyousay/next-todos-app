@@ -3,27 +3,34 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { Todo } from '../types/todo';
 
+type Data = {
+  todos: Todo[];
+};
+
 const axiosFetcher = async () => {
   const result = await axios.get<{ todos: Todo[] }>('/todos');
   return result.data;
 };
 
-const useCRUDTodo = (
+export const useCRUDTodo = (
   initialTodos: Todo[],
 ): {
-  data: { todos: Todo[] };
-  // TODO: Errorの型をつける
-  // TODO: Loadingの型をつける＆実装をする
-  error;
+  data: Data;
+  error: Error;
   handleUpdateCheckbox: typeof handleUpdateCheckbox;
   handleCreateTodo: typeof handleCreateTodo;
   handleDeleteTodo: typeof handleDeleteTodo;
 } => {
-  const { data, error, mutate } = useSWR('todoFetch', axiosFetcher, {
-    initialData: {
-      todos: initialTodos,
+  const { data, error, mutate } = useSWR<Data, Error>(
+    'todoFetch',
+    axiosFetcher,
+    {
+      initialData: {
+        todos: initialTodos,
+      },
+      revalidateOnMount: true,
     },
-  });
+  );
 
   const handleUpdateCheckbox = useCallback(
     async (id: string) => {
@@ -81,5 +88,3 @@ const useCRUDTodo = (
     handleDeleteTodo,
   };
 };
-
-export default useCRUDTodo;

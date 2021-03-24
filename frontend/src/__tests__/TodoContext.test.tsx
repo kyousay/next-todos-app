@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom/extend-expect';
-import useTodoCore from '../context/TodoContext/useTodoCore';
+import useTodoCore from '../hooks/useTodo/useTodoCore';
 
 describe('TodoContextTest', () => {
   it('初期State', () => {

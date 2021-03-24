@@ -4,6 +4,25 @@
     flex-direction: column;
     max-width: 600px;
     margin: 0 auto;
+	.todo_status_panel {
+		display: flex;
+		justify-content: space-between;
+		padding: 20px;
+	}
+	.todo_status {
+		color: blue;
+		cursor: pointer;
+		&:not(:first-child) {
+			margin-left: 20px;
+		}
+	}
+
+	.todo_active_status {
+		color:black;
+		cursor: default;
+		text-decoration: underline;
+	}
+
     .todo_list {
         padding: 50px 0;
     }

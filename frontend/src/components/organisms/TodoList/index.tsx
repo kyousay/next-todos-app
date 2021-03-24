@@ -1,13 +1,15 @@
 import React from 'react';
-import TodoList from './TodoList';
+import { TodoList } from './TodoList';
 import { Todo } from '../../../types/todo';
-import useCRUDTodo from '../../../Hooks/useCRUDTodo';
+import { useCRUDTodo } from '../../../hooks/useCRUDTodo';
+import { useTodoState } from '../../../hooks/useTodo/useTodoState';
+import { useFilterTodo } from '../../../hooks/useFilterTodo';
 
 type Props = {
   initialTodos: Todo[];
 };
 
-const Component: React.FC<Props> = ({ initialTodos }) => {
+export const Component: React.FC<Props> = ({ initialTodos }) => {
   const {
     data,
     error,
@@ -16,19 +18,20 @@ const Component: React.FC<Props> = ({ initialTodos }) => {
     handleDeleteTodo,
   } = useCRUDTodo(initialTodos);
 
-  // todo: 場所と記述方法を考える
+  const { status } = useTodoState();
+
   if (error) return <div>Error</div>;
 
   const { todos } = data;
 
+  const filterdTodos = useFilterTodo(status, todos);
+
   return (
     <TodoList
-      todos={todos}
+      todos={filterdTodos}
       handleUpdateCheckbox={handleUpdateCheckbox}
       handleCreateTodo={handleCreateTodo}
       handleDeleteTodo={handleDeleteTodo}
     />
   );
 };
-
-export default Component;

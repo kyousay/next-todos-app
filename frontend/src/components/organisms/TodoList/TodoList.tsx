@@ -1,8 +1,8 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import styles from './TodoList.module.scss';
 import { Todo } from '../../../types/todo';
-import Icon from '../../atoms/Icon';
+import { Icon } from '../../atoms/Icon';
+import { TodoForm } from '../../molecules/TodoForm';
 
 type Props = {
   todos: Todo[];
@@ -11,23 +11,13 @@ type Props = {
   handleDeleteTodo: (id: string) => void;
 };
 
-type FormData = {
-  todo_text: string;
-};
-
-const TodoList: React.FC<Props> = (props) => {
+export const TodoList: React.FC<Props> = (props) => {
   const {
     todos,
     handleCreateTodo,
     handleUpdateCheckbox,
     handleDeleteTodo,
   } = props;
-  const { register, handleSubmit, reset, errors } = useForm<FormData>();
-  const onSubmit = (data: FormData) => {
-    const uniqueString = Date.now().toString();
-    handleCreateTodo(uniqueString, uniqueString, data.todo_text);
-    reset();
-  };
   return (
     <div className={styles.root}>
       <ul className={styles.todo_list}>
@@ -54,34 +44,7 @@ const TodoList: React.FC<Props> = (props) => {
           );
         })}
       </ul>
-      <div className={styles.error_text_wrapper}>
-        {errors.todo_text && (
-          <p className={styles.error_text}>{errors.todo_text.message}</p>
-        )}
-      </div>
-      <form action="/todo/new" method="POST" onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="text"
-          name="todo_text"
-          placeholder="please input text"
-          ref={register({
-            required: { value: true, message: '入力は必須です' },
-            minLength: { value: 5, message: '5文字以上入力してください' },
-            maxLength: { value: 30, message: '30文字以内で入力してください' },
-            // TODO: 記号が使用できませんがよく出るので修正したい
-            pattern: {
-              value: /^[a-zA-Z1-9亜-熙ぁ-んァ-ヶ]+$/g,
-              message: '記号は使用できません',
-            },
-          })}
-          className={styles.text_input}
-        />
-        <button type="submit" className={styles.submit_button}>
-          送信
-        </button>
-      </form>
+      <TodoForm onSubmit={handleCreateTodo} />
     </div>
   );
 };
-
-export default TodoList;
