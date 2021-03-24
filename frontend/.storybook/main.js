@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  "stories": ["../components/**/__stories__/*.stories.tsx"],
+  "stories": ["../src/components/**/__stories__/*.stories.tsx"],
   "addons": [
     "@storybook/addon-links",
     "@storybook/addon-essentials"
@@ -10,7 +10,7 @@ module.exports = {
   webpackFinal: async config => {
     config.module.rules.push({
       test: /.module\.s?css$/,
-      include: path.resolve(__dirname, '../components'),
+      include: path.resolve(__dirname, '../src/components'),
       use: [
         'style-loader',
         {

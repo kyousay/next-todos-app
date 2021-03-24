@@ -1,16 +1,12 @@
 import React from 'react';
-import TrashIcon from './TrashIcon';
-import EditIcon from './EditIcon';
+import { TrashIcon } from './TrashIcon';
 
 type Props = {
-  type: 'delete' | 'edit';
+  type: 'delete';
 };
 
-const Icon: React.FC<Props> = ({ type }) => {
+export const Icon: React.FC<Props> = ({ type }) => {
   if (type === 'delete') return <TrashIcon />;
-  if (type === 'edit') return <EditIcon />;
 
   return null;
 };
-
-export default Icon;

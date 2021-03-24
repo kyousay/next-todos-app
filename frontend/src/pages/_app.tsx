@@ -1,8 +1,8 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
 import '../components/stylesheets/global.css';
-import Header from '../components/organisms/Header/Header';
-import TodoProviderContainer from '../context/TodoContext/TodoProviderContainer';
+import { Header } from '../components/organisms/Header/Header';
+import { TodoProviderContainer } from '../hooks/useTodo/TodoProviderContainer';
 
 export default function MyApp({
   Component,
