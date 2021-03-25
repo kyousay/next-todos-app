@@ -1,26 +1,26 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// TODO: 戻り値の方を調べる
+
 import React from 'react';
 import { InferGetStaticPropsType } from 'next';
-import { Component as TodoList } from '../components/organisms/TodoList';
+import { TodoList } from '../components/organisms/TodoList/TodoList';
 import { Todo } from '../types/todo';
-import { Component as TodoStatusPanel } from '../components/organisms/TodoStatusPanel';
-import { Component as TodoStatusChanger } from '../components/organisms/TodoStatusChanger';
-import { Sample } from '../components/atoms/Sample';
+import { TodoStatusPanel } from '../components/organisms/TodoStatusPanel/TodoStatusPanel';
+import { TodoStatusChanger } from '../components/organisms/TodoStatusChanger/TodoStatusChanger';
 
-//TODO: Missing Return Type
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function Component({ todos }: InferGetStaticPropsType<typeof getStaticProps>) {
+const Component = ({
+  todos,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <div>
       <TodoStatusPanel />
       <TodoStatusChanger />
       <TodoList initialTodos={todos} />
-      <Sample />
     </div>
   );
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   // TODO: absolute path
   const res = await fetch('http://localhost:3000/todos');
   const { todos }: { todos: Todo[] } = await res.json();
@@ -29,6 +29,6 @@ export async function getStaticProps() {
       todos,
     },
   };
-}
+};
 
 export default Component;

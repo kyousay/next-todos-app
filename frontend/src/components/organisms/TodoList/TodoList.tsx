@@ -3,25 +3,36 @@ import styles from './TodoList.module.scss';
 import { Todo } from '../../../types/todo';
 import { Icon } from '../../atoms/Icon';
 import { TodoForm } from '../../molecules/TodoForm';
+import { TodoStatusChanger } from '../TodoStatusChanger/TodoStatusChanger';
+import { useCRUDTodo } from '../../../hooks/useCRUDTodo/useCRUDTodo';
+import { useFilterTodo } from '../../../hooks/useFilterTodo/useFilterTodo';
+import { useTodoState } from '../../../hooks/useTodo/useTodoState';
 
 type Props = {
-  todos: Todo[];
-  handleUpdateCheckbox: (string) => void;
-  handleCreateTodo: (id: string, name: string, text: string) => void;
-  handleDeleteTodo: (id: string) => void;
+  initialTodos: Todo[];
 };
 
 export const TodoList: React.FC<Props> = (props) => {
+  const { initialTodos } = props;
   const {
-    todos,
-    handleCreateTodo,
+    data: { todos },
+    error,
     handleUpdateCheckbox,
+    handleCreateTodo,
     handleDeleteTodo,
-  } = props;
+  } = useCRUDTodo(initialTodos);
+
+  const { status } = useTodoState();
+
+  if (error) return <div>Error</div>;
+
+  const filterdTodos = useFilterTodo(status, todos);
+
   return (
     <div className={styles.root}>
+      <TodoStatusChanger />
       <ul className={styles.todo_list}>
-        {todos.map((todo) => {
+        {filterdTodos.map((todo) => {
           return (
             <li className={styles.todo_item} key={todo.id}>
               <input

@@ -36,7 +36,6 @@ app.patch('/todos/update/:id', (req: Request, res: Response) => {
       return todo.id === id ? todoData : todo
     }),
   }
-  console.log(state);
   res.send(state);
 });
 
@@ -46,7 +45,6 @@ app.post('/todos/create', (req: Request, res: Response) => {
     ...state,
     todos: state.todos.concat(todoData),
   }
-  console.log(state);
   res.send(state);
 });
 
@@ -56,7 +54,6 @@ app.delete('/todos/delete/:id', (req: Request, res: Response) => {
     ...state,
     todos: state.todos.filter((todo) => todo.id !== id)
   }
-  console.log(state);
   res.send(state);
 });
 

@@ -2,6 +2,6 @@ import { useContext } from 'react';
 import { TodoDispatchContext } from './TodoProviderContainer';
 import { TodoDispatch } from './useTodoCore';
 
-export function useTodoDispatch(): TodoDispatch {
+export const useTodoDispatch = (): TodoDispatch => {
   return useContext(TodoDispatchContext);
-}
+};

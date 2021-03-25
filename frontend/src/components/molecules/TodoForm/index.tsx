@@ -30,14 +30,13 @@ export const TodoForm: React.FC<Props> = ({ onSubmit }) => {
           name="todo_text"
           placeholder="please input text"
           ref={register({
+            pattern: {
+              value: /^[a-zA-Z1-9亜-熙ぁ-んァ-ヶ]+$/,
+              message: '記号は使用できません',
+            },
             required: { value: true, message: '入力は必須です' },
             minLength: { value: 5, message: '5文字以上入力してください' },
             maxLength: { value: 30, message: '30文字以内で入力してください' },
-            // TODO: 記号が使用できませんがよく出るので修正したい
-            pattern: {
-              value: /^[a-zA-Z1-9亜-熙ぁ-んァ-ヶ]+$/g,
-              message: '記号は使用できません',
-            },
           })}
           className={styles.text_input}
         />

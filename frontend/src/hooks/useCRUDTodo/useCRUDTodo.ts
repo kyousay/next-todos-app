@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import axios from 'axios';
 import useSWR from 'swr';
-import { Todo } from '../types/todo';
+import { Todo } from '../../types/todo';
 
 type Data = {
   todos: Todo[];
@@ -13,7 +13,7 @@ const axiosFetcher = async () => {
 };
 
 export const useCRUDTodo = (
-  initialTodos: Todo[],
+  initialTodos?: Todo[],
 ): {
   data: Data;
   error: Error;

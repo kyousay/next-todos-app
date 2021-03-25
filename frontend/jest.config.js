@@ -1,5 +1,5 @@
 module.exports = {
-  testMatch: ['**/__tests__/**/*.test.(ts|tsx)'],
+  testMatch: ['**/*.test.(ts|tsx)'],
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/node_modules/jest-css-modules',
   },

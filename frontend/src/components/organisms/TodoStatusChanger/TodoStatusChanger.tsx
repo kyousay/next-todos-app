@@ -1,15 +1,14 @@
 import React from 'react';
 import styles from './TodoStatusChanger.module.scss';
+import { useTodoDispatch } from '../../../hooks/useTodo/useTodoDispatch';
 
-type Props = {
-  onClick: () => void;
-};
-
-export const TodoStatusChanger: React.FC<Props> = (props) => {
-  const { onClick } = props;
+export const TodoStatusChanger: React.FC = () => {
+  const { handleChangeStatus } = useTodoDispatch();
   return (
     <div className={styles.root}>
-      <button className={styles.button} onClick={onClick}>
+      <button
+        className={styles.button}
+        onClick={() => handleChangeStatus('ALL')}>
         ALL
       </button>
     </div>

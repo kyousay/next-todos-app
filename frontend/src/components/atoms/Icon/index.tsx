@@ -5,8 +5,8 @@ type Props = {
   type: 'delete';
 };
 
-export const Icon: React.FC<Props> = ({ type }) => {
+export const Icon: React.FC<Props> = React.memo(({ type }) => {
   if (type === 'delete') return <TrashIcon />;
 
   return null;
-};
+});

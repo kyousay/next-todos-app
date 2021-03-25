@@ -1,15 +1,12 @@
 import React from 'react';
 import styles from './TodoStatusPanel.module.scss';
 import classNames from 'classnames';
-import { StatusString } from '../../../hooks/useTodo/useTodoCore';
+import { useTodoState } from '../../../hooks/useTodo/useTodoState';
+import { useTodoDispatch } from '../../../hooks/useTodo/useTodoDispatch';
 
-type Props = {
-  status: StatusString;
-  handleChangeStatus: (text: string) => void;
-};
-
-export const TodoStatusPanel: React.FC<Props> = (props) => {
-  const { status, handleChangeStatus } = props;
+export const TodoStatusPanel: React.FC = () => {
+  const { status } = useTodoState();
+  const { handleChangeStatus } = useTodoDispatch();
   return (
     <div className={styles.root}>
       {['ALL', 'NOTYET', 'DONE'].map((text, index) => {
