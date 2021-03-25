@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+import path from 'path';
 
 const express = require('express');
 
 const app = express();
+const port = process.env.PORT || 4000;
 
+app.use(express.static(path.resolve(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -59,4 +62,4 @@ app.delete('/todos/delete/:id', (req: Request, res: Response) => {
 
 app.get('/todos', (req: Request, res: Response) => res.send(state));
 
-app.listen(4000, () => console.log('Listening on port 4000'));
+app.listen(port, () => console.log('Listening on port 4000'));

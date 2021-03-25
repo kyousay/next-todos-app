@@ -1,7 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { TodoList } from '../TodoList';
-import { TodoProviderContainer } from '../../../../hooks/useTodo/TodoProviderContainer';
 
 storiesOf('organisms/TodoList', module).add('TodoList', () => {
   const dummyTodos = [
@@ -18,9 +17,6 @@ storiesOf('organisms/TodoList', module).add('TodoList', () => {
       checked: true,
     },
   ];
-  return (
-    <TodoProviderContainer>
-      <TodoList initialTodos={dummyTodos} />
-    </TodoProviderContainer>
-  );
+  //TODO: 確認できるようにする SWRMock
+  return <TodoList initialTodos={dummyTodos} />;
 });
