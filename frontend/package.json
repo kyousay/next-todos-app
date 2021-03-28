@@ -9,7 +9,7 @@
     "lint:eslint": "eslit src --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "test": "jest --env=jsdom"
+    "test": "jest --env=jsdom --verbose"
   },
   "dependencies": {
     "axios": "^0.21.1",

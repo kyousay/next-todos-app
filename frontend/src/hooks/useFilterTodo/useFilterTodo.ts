@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { Todo } from '../../types/todo';
 import { StatusString } from '../useTodo/useTodoCore';
 
-export const useFilterTodo = (status: StatusString, todos: Todo[]): Todo[] => {
+export const useFilterTodo = (
+  todos: Todo[],
+  status: StatusString = 'ALL',
+): Todo[] => {
   return useMemo(
     () =>
       todos.reduce((acc: Todo[], cur) => {

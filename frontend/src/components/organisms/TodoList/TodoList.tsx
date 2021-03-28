@@ -7,6 +7,7 @@ import { TodoStatusChanger } from '../TodoStatusChanger/TodoStatusChanger';
 import { useCRUDTodo } from '../../../hooks/useCRUDTodo/useCRUDTodo';
 import { useFilterTodo } from '../../../hooks/useFilterTodo/useFilterTodo';
 import { useTodoState } from '../../../hooks/useTodo/useTodoState';
+import { AsyncError } from '../../atoms/AsyncError';
 
 type Props = {
   initialTodos: Todo[];
@@ -24,9 +25,9 @@ export const TodoList: React.FC<Props> = (props) => {
 
   const { status } = useTodoState();
 
-  if (error) return <div>Error</div>;
+  const filterdTodos = useFilterTodo(todos, status);
 
-  const filterdTodos = useFilterTodo(status, todos);
+  if (error) return <AsyncError>{error.message}</AsyncError>;
 
   return (
     <div className={styles.root}>

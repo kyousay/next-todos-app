@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import axios from 'axios';
-import useSWR from 'swr';
+import useSWR, { SWRConfiguration } from 'swr';
 import { Todo } from '../../types/todo';
 
 type Data = {
@@ -14,6 +14,7 @@ const axiosFetcher = async () => {
 
 export const useCRUDTodo = (
   initialTodos?: Todo[],
+  swrOptions?: SWRConfiguration,
 ): {
   data: Data;
   error: Error;
@@ -29,6 +30,7 @@ export const useCRUDTodo = (
         todos: initialTodos,
       },
       revalidateOnMount: true,
+      ...swrOptions,
     },
   );
 
@@ -39,7 +41,7 @@ export const useCRUDTodo = (
         ...updatedTodo,
         checked: !updatedTodo.checked,
       };
-      await axios.patch(`/todos/update/${id}`, {
+      await axios.put(`/todos/update/${id}`, {
         todoData,
       });
       mutate({

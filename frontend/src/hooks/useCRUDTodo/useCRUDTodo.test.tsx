@@ -1,28 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { useCRUDTodo } from './useCRUDTodo';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { cache } from 'swr';
-import { Todo } from '../types/todo';
-
-const dummyData = {
-  todos: [
-    {
-      id: 'test',
-      text: 'test1',
-      name: 'test1',
-      checked: false,
-    },
-    {
-      id: 'test',
-      text: 'test2',
-      name: 'test2',
-      checked: true,
-    },
-  ],
-};
+import { Todo } from '../../types/todo';
 
 type ResponseData = typeof responseData;
 
@@ -51,36 +32,95 @@ const handlers = [
     '/todos/create',
     (req, res, ctx) => {
       const { todoData } = req.body;
-      const Response = {
+      const response = {
         todos: responseData.todos.concat(todoData),
       };
-      return res(ctx.json(Response), ctx.status(200));
+      return res(ctx.json(response), ctx.status(200));
+    },
+  ),
+  rest.put<null, ResponseData, { id: 'rest0' }>(
+    '/todos/update/:id',
+    (req, res, ctx) => {
+      const { id } = req.params;
+      const response = {
+        todos: responseData.todos.map((data) =>
+          data.id === id ? { ...data, checked: !data.checked } : data,
+        ),
+      };
+      return res(ctx.json(response), ctx.status(200));
+    },
+  ),
+  rest.delete<null, ResponseData, { id: 'rest0' }>(
+    '/todos/delete/:id',
+    (req, res, ctx) => {
+      const { id } = req.params;
+      const response = {
+        todos: responseData.todos.filter((todo) => todo.id !== id),
+      };
+      return res(ctx.json(response), ctx.status(200));
     },
   ),
 ];
 
 const server = setupServer(...handlers);
 
-beforeEach(() => cache.clear());
-beforeAll(() => server.listen());
-afterEach(() => {
-  server.resetHandlers();
-});
-afterAll(() => server.close());
-
 describe('useCRUDTodoテスト', () => {
-  it('Readテスト: useSWRによるデータfetchテスト　初期値あり', () => {
-    const { result } = renderHook(() => useCRUDTodo(dummyData.todos));
-    expect(result.current.data).toEqual(dummyData);
+  afterEach(async () => {
+    cache.clear();
+    await act(() => new Promise(requestAnimationFrame));
+  });
+  beforeAll(() => server.listen());
+  afterAll(() => server.close());
+
+  it('Readテスト(成功): useSWRによるデータfetchテスト　初期値あり', () => {
+    const initialData = {
+      todos: [
+        {
+          id: 'test1',
+          text: 'test1',
+          name: 'test1',
+          checked: false,
+        },
+        {
+          id: 'test2',
+          text: 'test2',
+          name: 'test2',
+          checked: true,
+        },
+      ],
+    };
+    const { result } = renderHook(() =>
+      useCRUDTodo(initialData.todos, { dedupingInterval: 0 }),
+    );
+    expect(result.current.data).toEqual(initialData);
     // eslint-disable-next-line no-undefined
     expect(result.current.error).toEqual(undefined);
   });
-  it('Readテスト: useSWRによるデータfetchテスト', async () => {
-    const { result } = renderHook(() => useCRUDTodo());
-    await waitFor(() => expect(result.current.data).toEqual(responseData));
+
+  it('Readテスト(成功): useSWRによるデータfetchテスト', async () => {
+    const { result, waitForValueToChange } = renderHook(() =>
+      useCRUDTodo(null, { dedupingInterval: 0 }),
+    );
+    await waitForValueToChange(() => result.current.data.todos);
     // eslint-disable-next-line no-undefined
     expect(result.current.error).toEqual(undefined);
   });
+
+  it('Readテスト(失敗): useSWRによるデータfetchテスト失敗', async () => {
+    server.use(
+      rest.get('/todos', (req, res, ctx) => {
+        return res.once(ctx.status(404));
+      }),
+    );
+    const { result, waitForValueToChange } = renderHook(() =>
+      useCRUDTodo(null, { dedupingInterval: 0 }),
+    );
+
+    await waitForValueToChange(() => result.current.error);
+    // eslint-disable-next-line no-undefined
+    expect(result.current.error.message).toEqual(result.current.error.message);
+  });
+
   it('Createテスト: handleCreateTodoテスト', async () => {
     const postData = {
       id: 'CreatedId',
@@ -88,8 +128,15 @@ describe('useCRUDTodoテスト', () => {
       text: 'CreatedText',
       checked: false,
     };
-    const { result } = renderHook(() => useCRUDTodo());
-    await waitFor(() => expect(result.current.data).toEqual(responseData));
+    const { result, waitForValueToChange } = renderHook(() =>
+      useCRUDTodo(null, { dedupingInterval: 0 }),
+    );
+    await waitForValueToChange(() => result.current.data.todos);
+
+    const expectedValue = {
+      todos: responseData.todos.concat([postData]),
+    };
+
     act(() => {
       result.current.handleCreateTodo(
         postData.id,
@@ -98,11 +145,50 @@ describe('useCRUDTodoテスト', () => {
       );
     });
 
-    // テストする方法なくない？
-    await waitFor(() =>
-      expect(result.current.data).toEqual({
-        todos: responseData.todos.concat([postData]),
-      }),
+    await waitForValueToChange(() => result.current.data.todos);
+
+    expect(result.current.data).toEqual(expectedValue);
+  });
+
+  it('Updateテスト: handleUpdateCheckboxテスト', async () => {
+    const { result, waitForValueToChange } = renderHook(() =>
+      useCRUDTodo(null, { dedupingInterval: 0 }),
     );
+
+    const expectedValue = {
+      todos: responseData.todos.map((data) =>
+        data.id === result.current.data.todos[0].id
+          ? { ...data, checked: !data.checked }
+          : data,
+      ),
+    };
+
+    act(() => {
+      result.current.handleUpdateCheckbox(result.current.data.todos[0].id);
+    });
+
+    await waitForValueToChange(() => result.current.data.todos);
+
+    expect(result.current.data).toEqual(expectedValue);
+  });
+
+  it('Deleteテスト: handleDeleteTodoテスト', async () => {
+    const { result, waitForValueToChange } = renderHook(() =>
+      useCRUDTodo(null, { dedupingInterval: 0 }),
+    );
+
+    const expectedValue = {
+      todos: responseData.todos.filter(
+        (todo) => todo.id !== result.current.data.todos[0].id,
+      ),
+    };
+
+    act(() => {
+      result.current.handleDeleteTodo(result.current.data.todos[0].id);
+    });
+
+    await waitForValueToChange(() => result.current.data.todos);
+
+    expect(result.current.data).toEqual(expectedValue);
   });
 });

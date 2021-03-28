@@ -30,7 +30,7 @@ let state = {
 }
 
 // TODO: req.bodyの型
-app.patch('/todos/update/:id', (req: Request, res: Response) => {
+app.put('/todos/update/:id', (req: Request, res: Response) => {
   const { id } = req.params;
   const { todoData } = req.body;
   state = {
