@@ -1,0 +1,19 @@
+.root {
+	width: 300px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px;
+	.todo_status {
+		color: blue;
+		cursor: pointer;
+		&:not(:first-child) {
+			margin-left: 20px;
+		}
+	}
+	.todo_active_status {
+		color:black;
+		cursor: default;
+		text-decoration: underline;
+	}
+}
